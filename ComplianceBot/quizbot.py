@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_data():
     # CSV 파일을 로드합니다.
-    data = pd.read_csv("your_csv_file.csv")
+    data = pd.read_csv("cocmp_quiz.csv")
     return data
 
 def get_question(sheet_name, question_number, data):
