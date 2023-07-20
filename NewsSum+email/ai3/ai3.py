@@ -83,6 +83,25 @@ def summarize_text(text, api_key):
 
     return summary
 
+def send_email(subject, body):
+    # Replace with your Zapier webhook URL
+    zapier_webhook_url = 'https://hooks.zapier.com/hooks/catch/1234567/abcde/'
+
+    # The data that will be sent to Zapier
+    data = {
+        'subject': subject,
+        'body': body
+    }
+
+    # Send a POST request to the Zapier webhook URL with the data
+    response = requests.post(zapier_webhook_url, data=data)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        print('Email sent successfully')
+    else:
+        print(f'Failed to send email: {response.content}')
+
 
 # Streamlit layout
 st.sidebar.title('OpenAI API Key')
@@ -113,12 +132,15 @@ if url:
             if st.button('GPT로 요약하기', key=f"{title}_summarize"):
                 summarization_model = pipeline("summarization", model="t5-base", tokenizer="t5-base", framework="tf", device=0)
                 prompt = "summarize: " + content[:600]  # Adjust the character limit as needed
-                summary = summarize_text(prompt, openai_key)
+                summary = summarize_text(prompt, api_key)
                 st.write('Summary:')
                 st.markdown(f"- {summary}")
                 if st.button('Copy Summary to Clipboard', key=f"{title}_summary_copy"):
                     pyperclip.copy(summary)
                     st.success('Summary Copied to clipboard')
+                if st.button('Send Summary via Email', key=f"{title}_summary_email"):
+                    send_email(title, summary)
+                    st.success('Summary sent via email')
             if st.button('Copy Content to Clipboard', key=f"{title}_content_copy"):
                 pyperclip.copy(content)
                 st.success('Content Copied to clipboard')
