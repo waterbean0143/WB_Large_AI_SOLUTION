@@ -1,0 +1,7 @@
+streamlit
+requests
+bs4
+pyperclip
+transformers==4.10.3
+tensorflow==2.12
+openai==0.27.0
