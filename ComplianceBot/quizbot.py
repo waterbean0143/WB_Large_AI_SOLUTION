@@ -3,7 +3,9 @@ import pandas as pd
 
 def load_data():
     # CSV 파일을 로드합니다.
-    data = pd.read_csv("waterbean0143/WB_Large_AI_SOLUTION/ComplianceBot/comp_quiz.csv")
+    # data_url = "https://github.com/your-username/your-repo/raw/main/your-folder/your-file.csv"
+    data_url = "https://github.com/"waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz.csv"
+
     return data
 
 def get_question(sheet_name, question_number, data):
