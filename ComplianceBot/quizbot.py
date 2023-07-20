@@ -3,16 +3,8 @@ import pandas as pd
 
 def load_data():
     # CSV 파일을 로드합니다.
-    # data_url = "https://github.com/your-username/your-repo/raw/main/your-folder/your-file.csv"
-    data_url = "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz.csv"
-
+    data = pd.read_csv("comp_quiz.csv")
     return data
-
-def get_question(sheet_name, question_number, data):
-    # 시트 이름과 문항 번호를 기반으로 문항을 가져옵니다.
-    sheet_data = data[data["번호"].str.contains(sheet_name)]
-    question = sheet_data[sheet_data["번호"] == f"{sheet_name}_{question_number}"]
-    return question
 
 def main():
     # 데이터 로드
@@ -32,7 +24,7 @@ def main():
 
         if not question.empty:
             st.write("문제:", question["문항"].values[0])
-            
+
             # OX 버튼 생성
             user_answer = st.radio("정답을 선택하세요.", ("O", "X"))
 
