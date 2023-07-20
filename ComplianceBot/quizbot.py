@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 
 def load_data():
-    # CSV 파일을 로드합니다.
-    data = pd.read_csv("comp_quiz.csv")
+    data_url = "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz.csv"
+    data = pd.read_csv(data_url)
     return data
 
 def main():
