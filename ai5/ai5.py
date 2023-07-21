@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from transformers import pipeline
 from urllib.parse import urljoin
+import pandas as pd
 
 def extract_article_list(url):
     # 1. URL에서 HTML 내용 가져오기
@@ -53,6 +54,7 @@ def extract_article_content(url):
 
     return article_content
 
+
 def save_to_csv(titles, links, contents, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
@@ -73,14 +75,16 @@ else:
 
 if url:
     try:
-        # Adjust URL to include https:// if not present
-        if not url.startswith('https://'):
-            if url.startswith('www.'):
-                url = "https://" + url  # 스키마 추가
-            else:
-                url = "https://www." + url  # 스키마 추가
+        # Your URL adjustment code here...
         article_titles, article_links, article_contents = extract_article_list(url)
         save_to_csv(article_titles, article_links, article_contents, 'articles.csv')
         st.success('Articles saved to articles.csv')
+
+        # Load the CSV data into a pandas DataFrame
+        articles_df = pd.read_csv('articles.csv')
+
+        # Display the DataFrame in the Streamlit app
+        st.dataframe(articles_df)
+        
     except Exception as e:
         st.error(f"An error occurred: {e}")
