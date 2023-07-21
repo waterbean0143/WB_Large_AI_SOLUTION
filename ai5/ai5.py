@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from transformers import pipeline
 from urllib.parse import urljoin
+import pandas as pd
 
 def extract_article_list(url):
     # 1. URL에서 HTML 내용 가져오기
