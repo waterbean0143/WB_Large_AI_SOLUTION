@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from transformers import pipeline
 from urllib.parse import urljoin
 import pandas as pd
+from datetime import datetime
 
 def extract_article_list(url):
     # 1. URL에서 HTML 내용 가져오기
@@ -57,10 +58,15 @@ def extract_article_content(url):
     article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
     # 4. 시간 추출
-    article_time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-
+    article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
+    article_time = article_time_element.text if article_time_element else "<na>"
+    if article_time != "<na>":
+        publish_time = datetime.strptime(article_time[3:], '%Y.%m.%d %H:%M')
+        article_time = datetime.strftime(publish_time, '%Y-%m-%d-%H-%M')
+    
     # 5. 태그 추출
-    article_tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
+    article_tag_element = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a')
+    article_tag = article_tag_element.text if article_tag_element else "<na>"
 
     return article_content, article_time, article_tag
 
@@ -102,4 +108,3 @@ if url:
         
     except Exception as e:
         st.error(f"An error occurred: {e}")
-
