@@ -10,8 +10,17 @@ def main():
     st.write("문항을 풀어보세요.")
 
     files = {
-        "comp_quiz02.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz02.csv",
-        "comp_quiz03.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz03.csv"
+        "2. 청탁금지법.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/2. 청탁금지법.csv",        
+        "3. 힘성희롱.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/3. 힘성희롱.csv",
+        "4. 회계세무.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/4. 회계세무.csv",
+        "5. 담합예방.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/5. 담합예방.csv",
+        "6.제3위험평가.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/6.제3위험평가.csv",
+        "7. 안전보건.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/7. 안전보건.csv",
+        "8. 부당특약.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/8. 부당특약.csv",
+        "9. 재원집행(대가지급).csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/9. 재원집행(대가지급).csv",
+        "12. 기술자료 탈취.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/12. 기술자료 탈취.csv",
+        "14. 위장도급.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/14. 위장도급.csv",
+        "16.제안센터 정보보안.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/16.제안센터 정보보안"
     }
 
     selected_file = st.selectbox("CSV 파일 선택", list(files.keys()))
