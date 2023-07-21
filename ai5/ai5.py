@@ -82,5 +82,12 @@ if url:
         article_titles, article_links, article_contents = extract_article_list(url)
         save_to_csv(article_titles, article_links, article_contents, 'articles.csv')
         st.success('Articles saved to articles.csv')
+
+        # Read the CSV file
+        df = pd.read_csv('articles.csv')
+
+        # Display the dataframe
+        st.dataframe(df)
+        
     except Exception as e:
         st.error(f"An error occurred: {e}")
