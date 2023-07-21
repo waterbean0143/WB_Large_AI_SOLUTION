@@ -16,14 +16,14 @@ def extract_article_list(url):
 
     # 3. 기사 제목 추출
     article_titles = []
-    title_elements = soup.select('#section-list > ul > li > h4.titles')
+    title_elements = soup.select("#section-list > ul > li:nth-child(1) > div > h4')
     for title_element in title_elements:
         article_title = title_element.get_text()
         article_titles.append(article_title)
 
     # 4. 기사 링크 추출
     article_links = []
-    link_elements = soup.select('#section-list > ul > li > h4 > a')
+    link_elements = soup.select('##section-list > ul > li:nth-child(1) > div > h4 > a')
     for link_element in link_elements:
         article_link = link_element.get('href')
         article_url = urljoin(url, article_link)  # 절대 경로로 변환
