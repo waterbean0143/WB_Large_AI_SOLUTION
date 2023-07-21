@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import pyperclip
 from transformers import pipeline
 from urllib.parse import urljoin
-import openai
 
 # requirements.txt에 필요한 내용[streamlit 배포시 필요]
 # -> 일반 환경에서는 해당 라이브러리를 pip install [패키지명]으로 설치 필요
@@ -85,6 +84,7 @@ def summarize_text(text, api_key):
 
 
 # Streamlit layout
+# Streamlit layout
 st.sidebar.title('OpenAI API Key')
 openai_key = st.sidebar.text_input("Enter your OpenAI API Key:", value="", type="password", key="openai_key_input")
 
@@ -107,13 +107,13 @@ if url:
             else:
                 url = "https://www." + url  # 스키마 추가
         article_titles, article_links, article_contents = extract_article_list(url)
+        summarization_model = pipeline("summarization", model="t5-base", tokenizer="t5-base", framework="tf", device=0)
         for title, link, content in zip(article_titles, article_links, article_contents):
             st.markdown(f'[{title}]({link})')
             st.text_area('Article Content:', content, height=300)
             if st.button('GPT로 요약하기', key=f"{title}_summarize"):
-                summarization_model = pipeline("summarization", model="t5-base", tokenizer="t5-base", framework="tf", device=0)
                 prompt = "summarize: " + content[:600]  # Adjust the character limit as needed
-                summary = summarize_text(prompt, openai_key)
+                summary = summarization_model(prompt)[0]['summary_text']
                 st.write('Summary:')
                 st.markdown(f"- {summary}")
                 if st.button('Copy Summary to Clipboard', key=f"{title}_summary_copy"):
