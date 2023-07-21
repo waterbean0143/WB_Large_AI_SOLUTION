@@ -28,7 +28,7 @@ def extract_article_list(url):
         title = article_element.select_one('div > h4 > a').text
         link = urljoin(url, article_element.select_one('div > h4 > a')['href'])
 
-        date_text = article_element.select_one('div > span > em').text
+        date_text = article_element.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
         date_text = date_text.replace("입력 ", "")
         date = datetime.datetime.strptime(date_text, '%Y.%m.%d %H:%M')
         date_str = date.strftime('%Y-%m-%d-%H-%M')
