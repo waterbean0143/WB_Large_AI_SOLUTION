@@ -17,15 +17,16 @@ def extract_article_content(url):
     content = "\n".join([p.get_text() for p in content_element.find_all('p')])
 
     # 시간 추출 및 형식 변환
-    time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-    time = time.replace("입력 ", "")  # '입력 ' 삭제
-    time = datetime.datetime.strptime(time, '%Y.%m.%d %H:%M')  # 시간 형식 지정
-    time = time.strftime('%Y-%m-%d-%H-%M')  # 출력 형식 지정
+    time_text = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
+    time_text = time_text.replace("입력 ", "")  # '입력 ' 삭제
+    time = datetime.datetime.strptime(time_text, '%Y.%m.%d %H:%M')  # 시간 형식 지정
+    time_str = time.strftime('%Y-%m-%d-%H-%M')  # 출력 형식 지정
 
     # 태그 추출
     tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
 
-    return content, time, tag
+    return content, time_str, tag
+
 
 def extract_article_list(url):
     response = requests.get(url)
