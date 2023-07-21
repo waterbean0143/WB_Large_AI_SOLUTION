@@ -18,8 +18,9 @@ def extract_article_content(url):
 
     # 시간 추출 및 형식 변환
     time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-    time = datetime.datetime.strptime(time, '입력 %Y.%m.%d %H.%M')
-    time = time.strftime('%Y-%m-%d-%H-%M')
+    time = time.replace("입력 ", "")  # '입력 ' 삭제
+    time = datetime.datetime.strptime(time, '%Y.%m.%d %H:%M')  # 시간 형식 지정
+    time = time.strftime('%Y-%m-%d-%H-%M')  # 출력 형식 지정
 
     # 태그 추출
     tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
