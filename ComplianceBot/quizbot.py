@@ -13,32 +13,24 @@ def main():
     st.write("문항을 풀어보세요.")
 
     total_questions = len(data)  # 전체 문항 수
-    correct_count = 0  # 정답 개수
-    wrong_questions = []  # 틀린 문항 번호
+    user_answers = [None] * total_questions  # 사용자 답변 리스트 초기화
 
-    for i, question in data.iterrows():
-        st.write(f"문제 {i+1}/{total_questions}:")
-        st.write("문항:", question["문항"])
+    with st.form("quiz_form"):
+        for i in range(total_questions):
+            st.write(f"문제 {i+1}/{total_questions}:")
+            st.write("문항:", data.loc[i, "문항"])
+            user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-        # O, X 버튼 생성
-        user_answer = st.radio("정답을 선택하세요.", (None, "O", "X"))
+        submitted = st.form_submit_button("제출")
 
-        if user_answer is None:
-            st.write("O나 X를 선택한 후 문제를 풀어주세요.")
-        else:
-            if user_answer == question["답안"]:
-                st.write("정답입니다!")
-                correct_count += 1
+    if submitted:
+        st.write("정답 확인:")
+        for i in range(total_questions):
+            if user_answers[i] == data.loc[i, "답안"]:
+                st.write(f"문제 {i+1}: 정답입니다!")
             else:
-                st.write("틀렸습니다.")
-                st.write("해설:", question["해설"])
-                wrong_questions.append(i+65)  # 틀린 문항 번호 저장
-
-        st.write("---")
-
-    st.write("모든 문항을 푸셨습니다!")
-    st.write("정답 개수:", correct_count)
-    st.write("틀린 문항 번호:", wrong_questions)
+                st.write(f"문제 {i+1}: 틀렸습니다.")
+                st.write("해설:", data.loc[i, "해설"])
 
 if __name__ == "__main__":
     main()
