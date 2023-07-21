@@ -58,11 +58,16 @@ def extract_article_content(url):
     article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
     # 4. 시간 추출
-    article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
-    article_time = article_time_element.text if article_time_element else "<na>"
-    if article_time != "<na>":
-        publish_time = datetime.strptime(article_time[3:], '%Y.%m.%d %H:%M')
+article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
+if article_time_element is not None:
+    article_time = article_time_element.text.strip()[3:]  # "입력 " 문자열 제거
+    try:
+        publish_time = datetime.strptime(article_time, '%Y.%m.%d %H:%M')
         article_time = datetime.strftime(publish_time, '%Y-%m-%d-%H-%M')
+    except ValueError:
+        article_time = "<na>"
+else:
+    article_time = "<na>"
     
     # 5. 태그 추출
     article_tag_element = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a')
