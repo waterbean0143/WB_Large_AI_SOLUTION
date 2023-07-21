@@ -1,3 +1,10 @@
+import csv
+import streamlit as st
+import requests
+from bs4 import BeautifulSoup
+from transformers import pipeline
+from urllib.parse import urljoin
+
 def extract_article_list(url):
     # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
