@@ -1,10 +1,9 @@
 import csv
+import datetime
+from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-import pandas as pd
 import streamlit as st
-import datetime
 
 def extract_article_content(url):
     response = requests.get(url)
@@ -16,61 +15,59 @@ def extract_article_content(url):
         raise ValueError("Could not find article content")
     content = "\n".join([p.get_text() for p in content_element.find_all('p')])
 
-    # 시간 추출 및 형식 변환
-    time_text = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-    time_text = time_text.replace("입력 ", "")  # '입력 ' 삭제
-    time = datetime.datetime.strptime(time_text, '%Y.%m.%d %H:%M')  # 시간 형식 지정
-    time_str = time.strftime('%Y-%m-%d-%H-%M')  # 출력 형식 지정
-
-    # 태그 추출
-    tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
-
-    return content, time_str, tag
-
+    return content
 
 def extract_article_list(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    titles = []
-    links = []
-    dates = []
-    tags = []
-    contents = []
+    articles_data = []
 
-    # Assuming there are 20 articles per page
-    for i in range(1, 21):
-        title = soup.select_one(f'#section-list > ul > li:nth-child({i}) > div > h4 > a').get('target')
-        link = urljoin(url, soup.select_one(f'#section-list > ul > li:nth-child({i}) > div > h4 > a').get('href'))
-        date = soup.select_one(f'#section-list > ul > li:nth-child({i}) > div > span > em:nth-child(3)').text
-        tag = soup.select_one(f'#section-list > ul > li:nth-child({i}) > div > span > em:nth-child(1)').text
+    article_elements = soup.select('#section-list > ul > li')
+    for article_element in article_elements:
+        title = article_element.select_one('div > h4 > a').text
+        link = urljoin(url, article_element.select_one('div > h4 > a')['href'])
 
-        content, time, tag = extract_article_content(link)
+        date_text = article_element.select_one('div > span > em').text
+        date_text = date_text.replace("입력 ", "")
+        date = datetime.datetime.strptime(date_text, '%Y.%m.%d %H:%M')
+        date_str = date.strftime('%Y-%m-%d-%H-%M')
 
-        titles.append(title)
-        links.append(link)
-        dates.append(date)
-        tags.append(tag)
-        contents.append(content)
+        tag = article_element.select_one('div > span > em:nth-child(1)').text
 
-    return titles, links, dates, tags, contents
+        content = extract_article_content(link)
 
-def save_to_csv(titles, links, dates, tags, contents, filename):
+        articles_data.append([date_str, title, content, link, tag])
+
+    return articles_data
+
+def save_to_csv(data, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(["Date", "Title", "Content", "Link", "Tag"])
-        for date, title, content, link, tag in zip(dates, titles, contents, links, tags):
-            writer.writerow([date, title, content, link, tag])
+        writer.writerows(data)
 
+# Streamlit layout
 st.title('WB_ArticleScraper')
 
-url = "https://www.aitimes.kr/news/articleList.html?page=1&total=3382&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_sdate=&sc_edate=&sc_serial_number=&sc_word=&box_idxno=&sc_multi_code=&sc_is_image=&sc_is_movie=&sc_user_name=&sc_order_by=E&view_type=sm"
+# URL 선택 옵션
+option = st.selectbox('URL 입력 방식', ['인공지능신문(aitimes) AI 산업군 - 제목형', '직접 입력'])
 
-try:
-    titles, links, dates, tags, contents = extract_article_list(url)
-    save_to_csv(titles, links, dates, tags, contents, 'articles.csv')
-    st.success('Articles saved to articles.csv')
-    df = pd.read_csv('articles.csv')
-    st.write(df)
-except Exception as e:
-    st.error(f"An error occurred: {e}")
+if option == '인공지능신문(aitimes) AI 산업군 - 제목형':
+    url = "https://www.aitimes.kr/news/articleList.html?page=1&total=3382&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_sdate=&sc_edate=&sc_serial_number=&sc_word=&box_idxno=&sc_multi_code=&sc_is_image=&sc_is_movie=&sc_user_name=&sc_order_by=E"
+else:
+    url = st.text_input("뉴스 기사 리스트 URL을 입력하세요: ", "")
+
+if url:
+    try:
+        # Adjust URL to include https:// if not present
+        if not url.startswith('https://'):
+            if url.startswith('www.'):
+                url = "https://" + url  # 스키마 추가
+            else:
+                url = "https://www." + url  # 스키마 추가
+        articles_data = extract_article_list(url)
+        save_to_csv(articles_data, 'articles.csv')
+        st.success('Articles saved to articles.csv')
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
