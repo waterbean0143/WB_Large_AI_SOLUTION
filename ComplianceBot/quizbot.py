@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 def load_data(file):
-    data = pd.read_csv(file, encoding='utf-8')
+    data = pd.read_csv(file)
     return data
 
 def main():
@@ -10,17 +10,8 @@ def main():
     st.write("문항을 풀어보세요.")
 
     files = {
-        "2. 청탁금지법.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",        
-        "3. 힘성희롱": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz03.csv",
-        "4. 회계세무": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz04.csv",
-        "5. 담합예방": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz05.csv",
-        "6.제3위험평가": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz06.csv",
-        "7. 안전보건": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz07.csv",
-        "8. 부당특약": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz08.csv",
-        "9. 재원집행(대가지급)": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz09.csv",
-        "12. 기술자료 탈취": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz12.csv",
-        "14. 위장도급": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz14.csv",
-        "16.제안센터 정보보안": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz16.csv"
+        "quiz02.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",
+        "quiz03.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz03.csv"
     }
 
     selected_file = st.selectbox("CSV 파일 선택", list(files.keys()))
