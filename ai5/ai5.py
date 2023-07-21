@@ -5,8 +5,9 @@ from bs4 import BeautifulSoup
 from transformers import pipeline
 from urllib.parse import urljoin
 import pandas as pd
+import datetime
 
-def extract_article_list(url):
+ef extract_article_content(url):
     # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
     html_content = response.content
@@ -14,32 +15,23 @@ def extract_article_list(url):
     # 2. HTML 파싱
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # 3. 기사 제목 추출
-    article_titles = []
-    title_elements = soup.select('#section-list > ul > li > h4.titles')
-    for title_element in title_elements:
-        article_title = title_element.get_text()
-        article_titles.append(article_title)
+    # 3. 본문 추출
+    article_content_element = soup.select_one('#snsAnchor > div')
+    if article_content_element is None:
+        raise ValueError("Could not find article content")
+    article_content_paragraphs = article_content_element.find_all('p')
+    article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
-    # 4. 기사 링크 추출
-    article_links = []
-    link_elements = soup.select('#section-list > ul > li > h4 > a')
-    for link_element in link_elements:
-        article_link = link_element.get('href')
-        article_url = urljoin(url, article_link)  # 절대 경로로 변환
-        article_links.append(article_url)
+    # 4. 시간 추출
+    article_time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
+    # Convert time to desired format
+    article_time = datetime.datetime.strptime(article_time, '입력 %Y.%m.%d %H.%M')
+    article_time = article_time.strftime('%Y-%m-%d-%H-%M')
 
-    # 5. 기사 본문, 시간, 태그 추출
-    article_contents = []
-    article_times = []
-    article_tags = []
-    for link in article_links:
-        article_content, article_time, article_tag = extract_article_content(link)
-        article_contents.append(article_content)
-        article_times.append(article_time)
-        article_tags.append(article_tag)
+    # 5. 태그 추출
+    article_tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
 
-    return article_titles, article_links, article_contents, article_times, article_tags
+    return article_content, article_time, article_tag
 
 def extract_article_content(url):
     # 1. URL에서 HTML 내용 가져오기
