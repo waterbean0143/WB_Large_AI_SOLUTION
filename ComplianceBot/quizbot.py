@@ -9,10 +9,16 @@ def main():
     st.title("Quiz App")
     st.write("문항을 풀어보세요.")
 
-    file = st.file_uploader("CSV 파일 선택", type=["csv"])
+    files = {
+        "comp_quiz02.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz02.csv",
+        "comp_quiz03.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz03.csv"
+    }
 
-    if file is not None:
-        data = load_data(file)
+    selected_file = st.selectbox("CSV 파일 선택", list(files.keys()))
+
+    if selected_file:
+        file_url = files[selected_file]
+        data = load_data(file_url)
 
         total_questions = len(data)  # 전체 문항 수
         user_answers = [None] * total_questions  # 사용자 답변 리스트 초기화
