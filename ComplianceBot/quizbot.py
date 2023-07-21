@@ -21,15 +21,18 @@ def main():
         st.write("문항:", question["문항"])
 
         # O, X 버튼 생성
-        user_answer = st.radio("정답을 선택하세요.", ("O", "X"))
+        user_answer = st.radio("정답을 선택하세요.", (None, "O", "X"))
 
-        if user_answer == question["답안"]:
-            st.write("정답입니다!")
-            correct_count += 1
+        if user_answer is None:
+            st.write("O나 X를 선택한 후 문제를 풀어주세요.")
         else:
-            st.write("틀렸습니다.")
-            st.write("해설:", question["해설"])
-            wrong_questions.append(i+65)  # 틀린 문항 번호 저장
+            if user_answer == question["답안"]:
+                st.write("정답입니다!")
+                correct_count += 1
+            else:
+                st.write("틀렸습니다.")
+                st.write("해설:", question["해설"])
+                wrong_questions.append(i+65)  # 틀린 문항 번호 저장
 
         st.write("---")
 
