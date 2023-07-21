@@ -8,59 +8,81 @@ import pandas as pd
 from datetime import datetime
 
 def extract_article_list(url):
+    # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
     html_content = response.content
+
+    # 2. HTML 파싱
     soup = BeautifulSoup(html_content, 'html.parser')
-    
+
+    # 3. 기사 제목 추출
     article_titles = []
+    title_elements = soup.select('#section-list > ul > li > h4.titles')
+    for title_element in title_elements:
+        article_title = title_element.get_text()
+        article_titles.append(article_title)
+
+    # 4. 기사 링크 추출
     article_links = []
+    link_elements = soup.select('#section-list > ul > li > h4 > a')
+    for link_element in link_elements:
+        article_link = link_element.get('href')
+        article_url = urljoin(url, article_link)  # 절대 경로로 변환
+        article_links.append(article_url)
+
+    # 5. 기사 본문, 시간, 태그 추출
     article_contents = []
     article_times = []
     article_tags = []
-
-    title_elements = soup.select('#section-list > ul > li > div > h4 > a')
-    for title_element in title_elements:
-        article_title = title_element.text
-        article_titles.append(article_title)
-
-        article_link = urljoin(url, title_element.get('href'))
-        article_links.append(article_link)
-
-        article_content, article_tag = extract_article_content(article_link)
+    for link in article_links:
+        article_content, article_time, article_tag = extract_article_content(link)
         article_contents.append(article_content)
-        article_tags.append(article_tag)
-
-        article_time = extract_article_time(article_link)
         article_times.append(article_time)
+        article_tags.append(article_tag)
 
     return article_titles, article_links, article_contents, article_times, article_tags
 
 def extract_article_content(url):
+    # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
     html_content = response.content
+
+    # 2. HTML 파싱
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    article_content = soup.select_one('#snsAnchor > div').text
-    article_tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
+    # 3. 본문 추출
+    article_content_element = soup.select_one('#snsAnchor > div')
+    if article_content_element is None:
+        raise ValueError("Could not find article content")
+    article_content_paragraphs = article_content_element.find_all('p')
+    article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
-    return article_content, article_tag
+    # 4. 시간 추출
+    article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
+    if article_time_element is not None:
+        article_time = article_time_element.text.strip()[3:]  # "입력 " 문자열 제거
+        try:
+            publish_time = datetime.strptime(article_time, '%Y.%m.%d %H:%M')
+            article_time = datetime.strftime(publish_time, '%Y-%m-%d-%H-%M')
+        except ValueError:
+            article_time = "<na>"
+    else:
+        article_time = "<na>"
 
-def extract_article_time(url):
-    response = requests.get(url)
-    html_content = response.content
-    soup = BeautifulSoup(html_content, 'html.parser')
+    # 5. 태그 추출
+    article_tag_element = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a')
+    if article_tag_element is not None:
+        article_tag = article_tag_element.text.strip()
+    else:
+        article_tag = "<na>"
 
-    raw_time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-    raw_time = raw_time.replace('입력 ', '')
-    article_time = datetime.strptime(raw_time, '%Y.%m.%d %H:%M').strftime('%Y-%m-%d-%H-%M')
-
-    return article_time
+    return article_content, article_time, article_tag
 
 def save_to_csv(titles, links, contents, times, tags, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(["Time", "Title", "Content", "Link", "Tag"])
-        for time, title, link, content, tag in zip(times, titles, links, contents, tags):
+        for time, title, content, link, tag in zip(times, titles, contents, links, tags):
             writer.writerow([time, title, content, link, tag])
 
 # Streamlit layout
