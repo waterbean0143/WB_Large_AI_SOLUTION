@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 def load_data():
-    data_url = "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz02.csv"
+    data_url = "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/comp_quiz.csv"
     data = pd.read_csv(data_url)
     return data
 
@@ -20,14 +20,13 @@ def main():
         st.write("문제:", question["문항"])
 
         # O, X 버튼 생성
-        user_answer = st.radio("정답을 선택하세요.", ("O", "X"), index=None)
+        user_answer = st.radio("정답을 선택하세요.", ("O", "X"))
 
-        if user_answer is not None:
-            if user_answer == question["답안"]:
-                st.write("정답입니다!")
-            else:
-                st.write("틀렸습니다.")
-                st.write("해설:", question["해설"])
+        if user_answer == question["답안"]:
+            st.write("정답입니다!")
+        else:
+            st.write("틀렸습니다.")
+            st.write("해설:", question["해설"])
 
 if __name__ == "__main__":
     main()
