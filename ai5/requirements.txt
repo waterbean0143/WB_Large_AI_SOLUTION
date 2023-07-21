@@ -3,3 +3,4 @@ streamlit==0.86.0
 requests==2.25.1
 beautifulsoup4==4.9.3
 transformers==4.10.0
+click<8.0,>=7.0
