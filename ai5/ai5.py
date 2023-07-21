@@ -1,51 +1,67 @@
-import csv
-import datetime
-from urllib.parse import urljoin
-import requests
-from bs4 import BeautifulSoup
-import streamlit as st
+def extract_article_list(url):
+    # 1. URL에서 HTML 내용 가져오기
+    response = requests.get(url)
+    html_content = response.content
+
+    # 2. HTML 파싱
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # 3. 기사 제목 추출
+    article_titles = []
+    title_elements = soup.select('#section-list > ul > li > h4.titles')
+    for title_element in title_elements:
+        article_title = title_element.get_text()
+        article_titles.append(article_title)
+
+    # 4. 기사 링크 추출
+    article_links = []
+    link_elements = soup.select('#section-list > ul > li > h4 > a')
+    for link_element in link_elements:
+        article_link = link_element.get('href')
+        article_url = urljoin(url, article_link)  # 절대 경로로 변환
+        article_links.append(article_url)
+
+    # 5. 기사 본문, 시간, 태그 추출
+    article_contents = []
+    article_times = []
+    article_tags = []
+    for link in article_links:
+        article_content, article_time, article_tag = extract_article_content(link)
+        article_contents.append(article_content)
+        article_times.append(article_time)
+        article_tags.append(article_tag)
+
+    return article_titles, article_links, article_contents, article_times, article_tags
 
 def extract_article_content(url):
+    # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
+    html_content = response.content
 
-    # 본문 추출
-    content_element = soup.select_one('#snsAnchor > div')
-    if content_element is None:
+    # 2. HTML 파싱
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # 3. 본문 추출
+    article_content_element = soup.select_one('#snsAnchor > div')
+    if article_content_element is None:
         raise ValueError("Could not find article content")
-    content = "\n".join([p.get_text() for p in content_element.find_all('p')])
+    article_content_paragraphs = article_content_element.find_all('p')
+    article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
-    return content
+    # 4. 시간 추출
+    article_time = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
 
-def extract_article_list(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
+    # 5. 태그 추출
+    article_tag = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a').text
 
-    articles_data = []
+    return article_content, article_time, article_tag
 
-    article_elements = soup.select('#section-list > ul > li')
-    for article_element in article_elements:
-        title = article_element.select_one('div > h4 > a').text
-        link = urljoin(url, article_element.select_one('div > h4 > a')['href'])
-
-        date_text = article_element.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i').text
-        date_text = date_text.replace("입력 ", "")
-        date = datetime.datetime.strptime(date_text, '%Y.%m.%d %H:%M')
-        date_str = date.strftime('%Y-%m-%d-%H-%M')
-
-        tag = article_element.select_one('div > span > em:nth-child(1)').text
-
-        content = extract_article_content(link)
-
-        articles_data.append([date_str, title, content, link, tag])
-
-    return articles_data
-
-def save_to_csv(data, filename):
+def save_to_csv(titles, links, contents, times, tags, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(["Date", "Title", "Content", "Link", "Tag"])
-        writer.writerows(data)
+        writer.writerow(["Time", "Title", "Content", "Link", "Tag"])
+        for time, title, content, link, tag in zip(times, titles, contents, links, tags):
+            writer.writerow([time, title, content, link, tag])
 
 # Streamlit layout
 st.title('WB_ArticleScraper')
@@ -66,8 +82,16 @@ if url:
                 url = "https://" + url  # 스키마 추가
             else:
                 url = "https://www." + url  # 스키마 추가
-        articles_data = extract_article_list(url)
-        save_to_csv(articles_data, 'articles.csv')
+        article_titles, article_links, article_contents, article_times, article_tags = extract_article_list(url)
+        save_to_csv(article_titles, article_links, article_contents, article_times, article_tags, 'articles.csv')
         st.success('Articles saved to articles.csv')
+
+        # Load the CSV data into a pandas DataFrame
+        articles_df = pd.read_csv('articles.csv')
+
+        # Display the DataFrame in the Streamlit app
+        st.dataframe(articles_df)
+        
     except Exception as e:
         st.error(f"An error occurred: {e}")
+
