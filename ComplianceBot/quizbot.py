@@ -10,7 +10,7 @@ def main():
     data = load_data()
 
     st.title("Quiz App")
-    st.write("문항 번호를 입력하여 문제를 풀어보세요.")
+    st.write("문항 번호를 입력하세요.")
 
     question_number = st.text_input("문항 번호를 입력하세요.")
 
