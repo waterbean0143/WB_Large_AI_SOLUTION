@@ -58,20 +58,23 @@ def extract_article_content(url):
     article_content = "\n".join([p.get_text() for p in article_content_paragraphs])
 
     # 4. 시간 추출
-article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
-if article_time_element is not None:
-    article_time = article_time_element.text.strip()[3:]  # "입력 " 문자열 제거
-    try:
-        publish_time = datetime.strptime(article_time, '%Y.%m.%d %H:%M')
-        article_time = datetime.strftime(publish_time, '%Y-%m-%d-%H-%M')
-    except ValueError:
+    article_time_element = soup.select_one('#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2) > i')
+    if article_time_element is not None:
+        article_time = article_time_element.text.strip()[3:]  # "입력 " 문자열 제거
+        try:
+            publish_time = datetime.strptime(article_time, '%Y.%m.%d %H:%M')
+            article_time = datetime.strftime(publish_time, '%Y-%m-%d-%H-%M')
+        except ValueError:
+            article_time = "<na>"
+    else:
         article_time = "<na>"
-else:
-    article_time = "<na>"
-    
+
     # 5. 태그 추출
     article_tag_element = soup.select_one('#article-view > div > header > nav > ul > li:nth-child(3) > a')
-    article_tag = article_tag_element.text if article_tag_element else "<na>"
+    if article_tag_element is not None:
+        article_tag = article_tag_element.text.strip()
+    else:
+        article_tag = "<na>"
 
     return article_content, article_time, article_tag
 
