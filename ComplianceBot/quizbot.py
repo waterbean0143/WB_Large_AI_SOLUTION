@@ -24,13 +24,16 @@ def main():
         submitted = st.form_submit_button("제출")
 
     if submitted:
-        st.write("정답 확인:")
+        st.write(f"총 {total_questions}문제 중")
+        correct_count = 0
         for i in range(total_questions):
             if user_answers[i] == data.loc[i, "답안"]:
-                st.write(f"문제 {i+1}: 정답입니다!")
+                correct_count += 1
             else:
-                st.write(f"문제 {i+1}: 틀렸습니다.")
+                st.write(f"문제 {i+1} 틀렸습니다.")
                 st.write("해설:", data.loc[i, "해설"])
+
+        st.write(f"{correct_count}문제 맞추셨습니다!")
 
 if __name__ == "__main__":
     main()
