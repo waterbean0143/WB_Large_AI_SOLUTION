@@ -18,7 +18,7 @@ def extract_article_list(url):
 
         response = requests.get(link)
         article_soup = BeautifulSoup(response.content, 'html.parser')
-        content = article_soup.select_one('#snsAnchor > div').text.strip()  # Updated selector
+        content = article_soup.select_one('#snsAnchor > div').text.strip()
 
         data.append([date, title, content, link, tag])
 
