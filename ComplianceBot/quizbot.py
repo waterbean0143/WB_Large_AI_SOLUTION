@@ -10,17 +10,17 @@ def main():
     st.write("문항을 풀어보세요.")
 
     files = {
-        "2. 청탁금지법.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/2. 청탁금지법.csv",        
-        "3. 힘성희롱.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/3. 힘성희롱.csv",
-        "4. 회계세무.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/4. 회계세무.csv",
-        "5. 담합예방.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/5. 담합예방.csv",
-        "6.제3위험평가.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/6.제3위험평가.csv",
-        "7. 안전보건.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/7. 안전보건.csv",
-        "8. 부당특약.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/8. 부당특약.csv",
-        "9. 재원집행(대가지급).csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/9. 재원집행(대가지급).csv",
-        "12. 기술자료 탈취.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/12. 기술자료 탈취.csv",
-        "14. 위장도급.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/14. 위장도급.csv",
-        "16.제안센터 정보보안.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/16.제안센터 정보보안"
+        "2. 청탁금지법.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",        
+        "3. 힘성희롱": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz03.csv",
+        "4. 회계세무": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz04.csv",
+        "5. 담합예방": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz05.csv",
+        "6.제3위험평가": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz06.csv",
+        "7. 안전보건": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz07.csv",
+        "8. 부당특약": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz08.csv",
+        "9. 재원집행(대가지급)": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz09.csv",
+        "12. 기술자료 탈취": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz12.csv",
+        "14. 위장도급": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz14.csv",
+        "16.제안센터 정보보안": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz16.csv"
     }
 
     selected_file = st.selectbox("CSV 파일 선택", list(files.keys()))
