@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 import pandas as pd
 import datetime
 
-ef extract_article_content(url):
+def extract_article_content(url):
     # 1. URL에서 HTML 내용 가져오기
     response = requests.get(url)
     html_content = response.content
