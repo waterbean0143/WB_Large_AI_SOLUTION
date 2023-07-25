@@ -38,13 +38,10 @@ def main():
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-                # Display the explanation text field only if the user has submitted the form
-                explanation_expander = st.expander("해설")
-                with explanation_expander:
-                    if st.form_submit_button("제출"):
-                        if user_answers[i] != data.loc[i, "답안"]:
-                            st.write("틀린 이유:", data.loc[i, "해설"])
+                # Create empty explanations for each question
+                explanation = st.empty()
 
+        # Display the explanation after the user clicks the "제출" (Submit) button
         if st.form_submit_button("제출"):
             st.write(f"총 {total_questions}문제 중")
             correct_count = 0
@@ -62,7 +59,7 @@ def main():
                 for question_num in incorrect_questions:
                     st.write(f"문제 {question_num+1}:")
                     st.write("문항:", data.loc[question_num, "문항"])
-                    st.write("해설:", data.loc[question_num, "해설"])
+                    explanation.text("틀린 이유: " + data.loc[question_num, "해설"])
 
 if __name__ == "__main__":
     main()
