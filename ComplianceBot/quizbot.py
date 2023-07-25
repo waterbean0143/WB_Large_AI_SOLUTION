@@ -10,17 +10,17 @@ def main():
     st.write("문항을 풀어보세요.")
 
     files = {
-        "quiz02.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",
-        "quiz03.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz03.csv",
-        "quiz04.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz04.csv",
-        "quiz05.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz05.csv",
-        "quiz06.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz06.csv",
-        "quiz07.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz07.csv",
-        "quiz08.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz08.csv",
-        "quiz09.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz09.csv",
-        "quiz12.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz12.csv",
-        "quiz14.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz14.csv",
-        "quiz16.csv": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz16.csv"
+        "2. 청탁금지법": "quiz02.csv",
+        "3. 힘/성희롱": "quiz03.csv",
+        "4. 회계세무": "quiz04.csv",
+        "5. 담합예방": "quiz05.csv",
+        "6. 제3위험평가": "quiz06.csv",
+        "7. 안전보건": "quiz07.csv",
+        "8. 부당특약": "quiz08.csv",
+        "9. 재원집행(대가지급)": "quiz09.csv",
+        "12. 기술자료 탈취": "quiz12.csv",
+        "14. 위장도급": "quiz14.csv",
+        "16. 제안센터 정보보안": "quiz16.csv"
     }
 
     selected_file = st.selectbox("CSV 파일 선택", list(files.keys()))
