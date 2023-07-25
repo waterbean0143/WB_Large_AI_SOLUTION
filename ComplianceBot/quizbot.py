@@ -39,7 +39,7 @@ def main():
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-        submitted = st.form_submit_button("제출")
+            submitted = st.form_submit_button("제출")
 
         if submitted:
             st.write(f"총 {total_questions}문제 중")
