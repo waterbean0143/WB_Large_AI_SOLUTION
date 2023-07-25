@@ -34,6 +34,8 @@ def main():
     st.title("Quiz App")
     st.write("문항을 풀어보세요.")
 
+    display_location = st.selectbox("결과 출력 위치 선택", ["pc", "mobile"])
+
     files = {
         "2. 청탁금지법": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",
         "3. 힘/성희롱": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz03.csv",
@@ -78,7 +80,6 @@ def main():
 
         # Display the explanation after the user clicks the "제출" (Submit) button
         if submitted:
-            display_location = st.selectbox("결과 출력 위치 선택", ["pc", "mobile"])
             if display_location == "pc":
                 with st.sidebar:  # Add content to the right sidebar
                     if incorrect_questions:
