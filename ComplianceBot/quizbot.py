@@ -11,6 +11,11 @@ def noCopyPaste():
         -webkit-user-select: none;
         -moz-user-select: none;
     }
+    .sidebar-content {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+    }
     </style>
     '''
 
@@ -23,6 +28,9 @@ def load_data(file):
     return data
 
 def main():
+    # Call the noCopyPaste function to disable text selection and copying
+    noCopyPaste()
+
     st.title("Quiz App")
     st.write("문항을 풀어보세요.")
 
