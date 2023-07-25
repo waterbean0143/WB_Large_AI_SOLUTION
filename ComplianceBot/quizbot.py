@@ -32,21 +32,20 @@ def main():
         total_questions = len(data)  # 전체 문항 수
         user_answers = [None] * total_questions  # 사용자 답변 리스트 초기화
 
-        # Empty text fields for explanations
-        explanations = [st.empty() for _ in range(total_questions)]
-
         with st.form("quiz_form"):
             for i in range(total_questions):
                 st.write(f"문제 {i+1}/{total_questions}:")
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-                # Display the empty text field for explanations
-                explanations[i]
+                # Display the explanation text field only if the user has submitted the form
+                explanation_expander = st.expander("해설")
+                with explanation_expander:
+                    if st.form_submit_button("제출"):
+                        if user_answers[i] != data.loc[i, "답안"]:
+                            st.write("틀린 이유:", data.loc[i, "해설"])
 
-            submitted = st.form_submit_button("제출")
-
-        if submitted:
+        if st.form_submit_button("제출"):
             st.write(f"총 {total_questions}문제 중")
             correct_count = 0
             incorrect_questions = []
@@ -64,8 +63,6 @@ def main():
                     st.write(f"문제 {question_num+1}:")
                     st.write("문항:", data.loc[question_num, "문항"])
                     st.write("해설:", data.loc[question_num, "해설"])
-                    # Display the explanation in the corresponding text field
-                    explanations[question_num].text("틀린 이유: " + data.loc[question_num, "해설"])
 
 if __name__ == "__main__":
     main()
