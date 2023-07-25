@@ -42,7 +42,7 @@ def main():
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
                 if user_answers[i] != data.loc[i, "답안"]:
-                    incorrect_questions.append(f"문제 {i+1}")
+                    incorrect_questions.append(i+1)
                     explanations.append(data.loc[i, "해설"])
 
             submitted = st.form_submit_button("제출")  # Move submit button inside the form context
@@ -52,10 +52,11 @@ def main():
             with st.sidebar:  # Add content to the right sidebar
                 if incorrect_questions:
                     st.header("틀린 문제:")
-                    st.write("\n".join(incorrect_questions))
+                    st.write(", ".join([f"문제 {q}번" for q in incorrect_questions]))
 
                     st.header("해설:")
-                    st.write("\n".join(explanations))
+                    for i, explanation in enumerate(explanations):
+                        st.write(f"[{incorrect_questions[i]}번 해설] : {explanation}")
                 else:
                     st.write("모든 문제를 정답으로 맞추셨습니다!")
 
