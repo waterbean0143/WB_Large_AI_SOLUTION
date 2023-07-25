@@ -6,8 +6,8 @@ def load_data(file):
     return data
 
 def main():
-    st.title("Compliance Quiz App")
-    st.write("컴플라이언스 퀴즈 대비 자가검진 퀴즈.")
+    st.title("Quiz App")
+    st.write("문항을 풀어보세요.")
 
     files = {
         "2. 청탁금지법": "quiz02.csv",
@@ -23,7 +23,7 @@ def main():
         "16. 제안센터 정보보안": "quiz16.csv"
     }
 
-    selected_text = st.selectbox("컴플라이언스 챕터를 고르세요.", list(files.keys()))
+    selected_text = st.selectbox("문항을 선택하세요.", list(files.keys()))
 
     if selected_text:
         selected_file = files[selected_text]
@@ -38,6 +38,10 @@ def main():
                 st.write(f"문제 {i+1}/{total_questions}:")
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
+
+                # Display incorrect answers in the sidebar
+                if user_answers[i] != data.loc[i, "답안"]:
+                    st.sidebar.write(f"문제 {i+1} - 틀린 답: {user_answers[i]}")
 
             submitted = st.form_submit_button("제출")
 
