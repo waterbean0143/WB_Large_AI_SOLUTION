@@ -6,8 +6,8 @@ def load_data(file):
     return data
 
 def main():
-    st.title("Quiz App")
-    st.write("문항을 풀어보세요.")
+    st.title("Compliance Quiz App")
+    st.write("컴플라이언스 퀴즈 대비 자가검진 퀴즈.")
 
     files = {
         "2. 청탁금지법": "quiz02.csv",
@@ -23,7 +23,7 @@ def main():
         "16. 제안센터 정보보안": "quiz16.csv"
     }
 
-    selected_text = st.selectbox("문항을 선택하세요.", list(files.keys()))
+    selected_text = st.selectbox("컴플라이언스 챕터를 고르세요.", list(files.keys()))
 
     if selected_text:
         selected_file = files[selected_text]
