@@ -39,6 +39,10 @@ def main():
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
+                # Display explanation for incorrect answers
+                if user_answers[i] != data.loc[i, "답안"]:
+                    st.write("근거/해설:", data.loc[i, "해설"])
+
             submitted = st.form_submit_button("제출")
 
         if submitted:
