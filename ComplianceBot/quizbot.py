@@ -31,6 +31,7 @@ def main():
 
         total_questions = len(data)  # 전체 문항 수
         user_answers = ["미선택"] * total_questions  # 사용자 답변 리스트 초기화
+        unanswered_questions = []  # List to store question numbers with "[미선택]" option checked
 
         incorrect_questions = []
         explanations = []
@@ -42,10 +43,11 @@ def main():
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["미선택", "O", "X"], key=f"answer_{i}")
                 st.write("")  # Add an empty line for spacing
 
-                if user_answers[i] != "미선택":
-                    if user_answers[i] != data.loc[i, "답안"]:
-                        incorrect_questions.append(i+1)
-                        explanations.append(data.loc[i, "해설"])
+                if user_answers[i] == "미선택":
+                    unanswered_questions.append(i+1)
+                elif user_answers[i] != data.loc[i, "답안"]:
+                    incorrect_questions.append(i+1)
+                    explanations.append(data.loc[i, "해설"])
 
             submitted = st.form_submit_button("제출")  # Move submit button inside the form context
 
@@ -59,12 +61,13 @@ def main():
                     st.header("해설:")
                     for i, explanation in enumerate(explanations):
                         st.write(f"[{incorrect_questions[i]}번 해설] : {explanation}")
-                else:
-                    st.write("모든 문제를 정답으로 맞추셨습니다!")
 
-        # Check if there are any "[미선택]" options checked
-        if "미선택" in user_answers:
-            st.warning("[미선택] 항목을 체크한 문제가 있습니다. 체크하지 않은 문제를 다시 풀어주세요.")
+                if unanswered_questions:
+                    st.warning("[미선택] 항목을 체크한 문제:")
+                    st.write(", ".join([f"문제 {q}번" for q in unanswered_questions]))
+
+                if not incorrect_questions and not unanswered_questions:
+                    st.write("모든 문제를 정답으로 맞추셨습니다!")
 
 if __name__ == "__main__":
     main()
