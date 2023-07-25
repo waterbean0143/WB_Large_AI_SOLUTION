@@ -32,34 +32,35 @@ def main():
         total_questions = len(data)  # 전체 문항 수
         user_answers = [None] * total_questions  # 사용자 답변 리스트 초기화
 
+        with st.sidebar:  # Add content to the sidebar
+            incorrect_questions_list = st.empty()
+            explanations_list = st.empty()
+
         with st.form("quiz_form"):
             for i in range(total_questions):
                 st.write(f"문제 {i+1}/{total_questions}:")
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-                # Create empty explanations for each question
-                explanation = st.empty()
+        # Display the explanation after the user clicks the "제출" (Submit) button
+        if st.form_submit_button("제출"):
+            incorrect_questions = []
+            explanations = []
 
-            # Display the explanation after the user clicks the "제출" (Submit) button
-            if st.form_submit_button("제출"):
-                st.write(f"총 {total_questions}문제 중")
-                correct_count = 0
-                incorrect_questions = []
-                for i in range(total_questions):
-                    if user_answers[i] == data.loc[i, "답안"]:
-                        correct_count += 1
-                    else:
-                        incorrect_questions.append(i)
+            for i in range(total_questions):
+                if user_answers[i] != data.loc[i, "답안"]:
+                    incorrect_questions.append(f"문제 {i+1}")
+                    explanations.append(data.loc[i, "해설"])
 
-                st.write(f"{correct_count}문제 맞추셨습니다!")
+            # Update the sidebar with incorrect questions and explanations
+            if incorrect_questions:
+                incorrect_questions_list.header("틀린 문제:")
+                incorrect_questions_list.write("\n".join(incorrect_questions))
 
-                if incorrect_questions:
-                    st.write("틀린 문제:")
-                    for question_num in incorrect_questions:
-                        st.write(f"문제 {question_num+1}:")
-                        st.write("문항:", data.loc[question_num, "문항"])
-                        explanation.text("틀린 이유: " + data.loc[question_num, "해설"])
+                explanations_list.header("해설:")
+                explanations_list.write("\n".join(explanations))
+            else:
+                incorrect_questions_list.write("모든 문제를 정답으로 맞추셨습니다!")
 
 if __name__ == "__main__":
     main()
