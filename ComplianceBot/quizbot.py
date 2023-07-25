@@ -78,12 +78,29 @@ def main():
 
         # Display the explanation after the user clicks the "제출" (Submit) button
         if submitted:
-            with st.sidebar:  # Add content to the right sidebar
+            display_location = st.selectbox("결과 출력 위치 선택", ["pc", "mobile"])
+            if display_location == "pc":
+                with st.sidebar:  # Add content to the right sidebar
+                    if incorrect_questions:
+                        st.header("틀린 문제:")
+                        st.write(", ".join([f"문제 {q}번" for q in incorrect_questions]))
+
+                        st.header("해설:")
+                        for i, explanation in enumerate(explanations):
+                            st.write(f"[{incorrect_questions[i]}번 해설] : {explanation}")
+
+                    if unanswered_questions:
+                        st.warning("[미선택] 항목을 체크한 문제:")
+                        st.write(", ".join([f"문제 {q}번" for q in unanswered_questions]))
+
+                    if not incorrect_questions and not unanswered_questions:
+                        st.write("모든 문제를 정답으로 맞추셨습니다!")
+            else:  # display_location == "mobile"
                 if incorrect_questions:
-                    st.header("틀린 문제:")
+                    st.write("틀린 문제:")
                     st.write(", ".join([f"문제 {q}번" for q in incorrect_questions]))
 
-                    st.header("해설:")
+                    st.write("해설:")
                     for i, explanation in enumerate(explanations):
                         st.write(f"[{incorrect_questions[i]}번 해설] : {explanation}")
 
