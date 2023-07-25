@@ -41,25 +41,25 @@ def main():
                 # Create empty explanations for each question
                 explanation = st.empty()
 
-        # Display the explanation after the user clicks the "제출" (Submit) button
-        if st.form_submit_button("제출"):
-            st.write(f"총 {total_questions}문제 중")
-            correct_count = 0
-            incorrect_questions = []
-            for i in range(total_questions):
-                if user_answers[i] == data.loc[i, "답안"]:
-                    correct_count += 1
-                else:
-                    incorrect_questions.append(i)
+            # Display the explanation after the user clicks the "제출" (Submit) button
+            if st.form_submit_button("제출"):
+                st.write(f"총 {total_questions}문제 중")
+                correct_count = 0
+                incorrect_questions = []
+                for i in range(total_questions):
+                    if user_answers[i] == data.loc[i, "답안"]:
+                        correct_count += 1
+                    else:
+                        incorrect_questions.append(i)
 
-            st.write(f"{correct_count}문제 맞추셨습니다!")
+                st.write(f"{correct_count}문제 맞추셨습니다!")
 
-            if incorrect_questions:
-                st.write("틀린 문제:")
-                for question_num in incorrect_questions:
-                    st.write(f"문제 {question_num+1}:")
-                    st.write("문항:", data.loc[question_num, "문항"])
-                    explanation.text("틀린 이유: " + data.loc[question_num, "해설"])
+                if incorrect_questions:
+                    st.write("틀린 문제:")
+                    for question_num in incorrect_questions:
+                        st.write(f"문제 {question_num+1}:")
+                        st.write("문항:", data.loc[question_num, "문항"])
+                        explanation.text("틀린 이유: " + data.loc[question_num, "해설"])
 
 if __name__ == "__main__":
     main()
