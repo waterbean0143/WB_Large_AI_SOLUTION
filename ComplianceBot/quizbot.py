@@ -39,28 +39,25 @@ def main():
                 st.write("문항:", data.loc[i, "문항"])
                 user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
 
-                # Display incorrect answers only after the form is submitted
-                if st.form_submit_button("제출"):
-                    if user_answers[i] != data.loc[i, "답안"]:
-                        st.write("해설:", data.loc[i, "해설"])
+        submitted = st.form_submit_button("제출")
 
-        # After the form is submitted, show the result and incorrect questions.
-        st.write(f"총 {total_questions}문제 중")
-        correct_count = 0
-        incorrect_questions = []
-        for i in range(total_questions):
-            if user_answers[i] == data.loc[i, "답안"]:
-                correct_count += 1
-            else:
-                incorrect_questions.append(i+1)
+        if submitted:
+            st.write(f"총 {total_questions}문제 중")
+            correct_count = 0
+            incorrect_questions = []
+            for i in range(total_questions):
+                if user_answers[i] == data.loc[i, "답안"]:
+                    correct_count += 1
+                else:
+                    incorrect_questions.append(i+1)
 
-        st.write(f"{correct_count}문제 맞추셨습니다!")
+            st.write(f"{correct_count}문제 맞추셨습니다!")
 
-        if len(incorrect_questions) > 0:
-            st.write("틀린 문제:")
-            for question_num in incorrect_questions:
-                st.write(f"문제 {question_num}:", data.loc[question_num-1, "문항"])
-                st.write("해설:", data.loc[question_num-1, "해설"])
+            if len(incorrect_questions) > 0:
+                st.write("틀린 문제:")
+                for question_num in incorrect_questions:
+                    st.write(f"문제 {question_num}:", data.loc[question_num-1, "문항"])
+                    st.write("해설:", data.loc[question_num-1, "해설"])
 
 if __name__ == "__main__":
     main()
