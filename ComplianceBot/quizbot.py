@@ -32,29 +32,35 @@ def main():
 
         total_questions = len(data)
         user_answers = [None] * total_questions
-        show_explanation = [False] * total_questions
 
-        with st.form("quiz_form"):
-            for i in range(total_questions):
-                st.write(f"문제 {i+1}/{total_questions}:")
-                st.write("문항:", data.loc[i, "문항"])
-                user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
-                if show_explanation[i]:
-                    st.write("해설:", data.loc[i, "해설"])
+        form = st.form("quiz_form")
+        answer_labels = []
 
-            submitted = st.form_submit_button("제출")
+        for i in range(total_questions):
+            st.write(f"문제 {i+1}/{total_questions}:")
+            st.write("문항:", data.loc[i, "문항"])
+            user_answers[i] = form.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
+            answer_labels.append(form.empty())  # 추후 해설을 추가할 라벨 저장
+
+        submitted = form.form_submit_button("제출")
 
         if submitted:
-            st.write(f"총 {total_questions}문제 중")
             correct_count = 0
+            st.markdown(f"총 {total_questions}문제 중")
+            incorrect_questions = []
+
             for i in range(total_questions):
                 if user_answers[i] == data.loc[i, "답안"]:
                     correct_count += 1
                 else:
-                    show_explanation[i] = True
-                    st.experimental_rerun()
+                    incorrect_questions.append(i)
+                    # 틀린 문항 아래에 해설 추가
+                    answer_labels[i].write("해설:", data.loc[i, "해설"])
 
-            st.write(f"{correct_count}문제 맞추셨습니다!")
+            st.markdown(f"**- {correct_count}문제 맞추셨습니다!**")
+
+            if len(incorrect_questions) > 0:
+                st.markdown("**틀린 문제와 해설:**")
 
 if __name__ == "__main__":
     main()
