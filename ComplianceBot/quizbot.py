@@ -34,7 +34,7 @@ def main():
     st.title("Quiz App")
     st.write("문항을 풀어보세요.")
 
-    display_location = st.selectbox("결과 출력 위치 선택", ["pc", "mobile"])
+    display_location = st.selectbox("디바이스 선택", ["pc", "mobile"])
 
     files = {
         "2. 청탁금지법": "https://github.com/waterbean0143/WB_Large_AI_SOLUTION/raw/main/ComplianceBot/quiz02.csv",
