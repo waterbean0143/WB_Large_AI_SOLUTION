@@ -30,7 +30,7 @@ def main():
         data = load_data(file_url)
 
         total_questions = len(data)  # 전체 문항 수
-        user_answers = [None] * total_questions  # 사용자 답변 리스트 초기화
+        user_answers = ["미선택"] * total_questions  # 사용자 답변 리스트 초기화
 
         incorrect_questions = []
         explanations = []
@@ -39,11 +39,13 @@ def main():
             for i in range(total_questions):
                 st.write(f"문제 {i+1}/{total_questions}:")
                 st.write("문항:", data.loc[i, "문항"])
-                user_answers[i] = st.radio("정답을 선택하세요.", options=["O", "X"], key=f"answer_{i}")
+                user_answers[i] = st.radio("정답을 선택하세요.", options=["미선택", "O", "X"], key=f"answer_{i}")
+                st.write("")  # Add an empty line for spacing
 
-                if user_answers[i] != data.loc[i, "답안"]:
-                    incorrect_questions.append(i+1)
-                    explanations.append(data.loc[i, "해설"])
+                if user_answers[i] != "미선택":
+                    if user_answers[i] != data.loc[i, "답안"]:
+                        incorrect_questions.append(i+1)
+                        explanations.append(data.loc[i, "해설"])
 
             submitted = st.form_submit_button("제출")  # Move submit button inside the form context
 
@@ -59,6 +61,10 @@ def main():
                         st.write(f"[{incorrect_questions[i]}번 해설] : {explanation}")
                 else:
                     st.write("모든 문제를 정답으로 맞추셨습니다!")
+
+        # Check if there are any "[미선택]" options checked
+        if "미선택" in user_answers:
+            st.warning("[미선택] 항목을 체크한 문제가 있습니다. 체크하지 않은 문제를 다시 풀어주세요.")
 
 if __name__ == "__main__":
     main()
