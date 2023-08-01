@@ -2,19 +2,11 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import pyperclip
-from transformers import pipeline
+import openai
 from urllib.parse import urljoin
 
-# requirements.txt에 필요한 내용[streamlit 배포시 필요]
-# -> 일반 환경에서는 해당 라이브러리를 pip install [패키지명]으로 설치 필요
-# streamlit
-# requests
-# bs4
-# pyperclip
-# transformers==4.10.3
-# tensorflow==2.12
-# openai==0.27.0
-
+# OpenAI API 초기화
+openai.api_key = "YOUR_OPENAI_API_KEY"
 
 def extract_article_list(url):
     # 1. URL에서 HTML 내용 가져오기
@@ -66,30 +58,24 @@ def extract_article_content(url):
     return article_content
 
 
-def summarize_text(text, api_key):
-    # System instruction: "The assistant should summarize the user's input into 30 characters."
-    system_instruction = "The assistant should summarize the user's input into 30 characters in Korean."
-
-    messages = [
-        {"role": "system", "content": system_instruction},
-        {"role": "user", "content": text}
-    ]
-
-    openai.api_key = api_key
-    response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
-
-    summary = response['choices'][0]['message']['content']
-
-    return summary
+def summarize_text(text):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=text,
+        max_tokens=100,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    return response.choices[0].text.strip()
 
 
-# Streamlit layout
 # Streamlit layout
 st.sidebar.title('OpenAI API Key')
-openai_key = st.sidebar.text_input("Enter your OpenAI API Key:", value="", type="password", key="openai_key_input")
+openai_key = st.sidebar.text_input("Enter your OpenAI API Key:", type="password")
 
 st.title('WB_ArticleScraper')
-
 # URL 선택 옵션
 option = st.selectbox('URL 입력 방식', ['인공지능신문(aitimes) AI 산업군 - 제목형', '직접 입력'])
 
@@ -107,13 +93,11 @@ if url:
             else:
                 url = "https://www." + url  # 스키마 추가
         article_titles, article_links, article_contents = extract_article_list(url)
-        summarization_model = pipeline("summarization", model="t5-base", tokenizer="t5-base", framework="tf", device=0)
         for title, link, content in zip(article_titles, article_links, article_contents):
             st.markdown(f'[{title}]({link})')
             st.text_area('Article Content:', content, height=300)
             if st.button('GPT로 요약하기', key=f"{title}_summarize"):
-                prompt = "summarize: " + content[:600]  # Adjust the character limit as needed
-                summary = summarization_model(prompt)[0]['summary_text']
+                summary = summarize_text(content)
                 st.write('Summary:')
                 st.markdown(f"- {summary}")
                 if st.button('Copy Summary to Clipboard', key=f"{title}_summary_copy"):
