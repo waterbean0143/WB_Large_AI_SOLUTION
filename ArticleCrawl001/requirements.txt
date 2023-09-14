@@ -1,0 +1,10 @@
+streamlit
+beautifulSoup4
+requests
+pandas
+urllib3
+openai
+datetime
+KMeans
+scikit-learn
+cosine_similarity
