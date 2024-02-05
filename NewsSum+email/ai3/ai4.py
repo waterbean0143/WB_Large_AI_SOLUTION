@@ -34,8 +34,8 @@ def gpt_summarize(text):
 
 def send_email(subject, body, to_email, attachment_path):
     # 보내는 사람 이메일 계정 정보
-    from_email = "sbbae123@naver.com"  # 발송자 이메일 주소
-    password = "sbbaehebron77"  # 발송자 이메일 계정 비밀번호
+    from_email = "네이버이메일@naver.com"  # 발송자 이메일 주소
+    password = "비밀번호"  # 발송자 이메일 계정 비밀번호
 
     # 이메일 설정
     msg = MIMEMultipart()
@@ -55,7 +55,7 @@ def send_email(subject, body, to_email, attachment_path):
 
     # SMTP 서버 연결
     smtp_server = "smtp.naver.com"
-    smtp_port = 587
+    smtp_port = 58
     try:
         smtp_conn = smtplib.SMTP(smtp_server, smtp_port)
         smtp_conn.starttls()  # TLS 보안 연결
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     # 텍스트 요약
     summarized_body = gpt_summarize(body)
 
-    to_email_list = ["waterbean.bae@kt.com"]  # 여러 명의 수신자 이메일 주소들을 리스트로 저장
+    to_email_list = ["전송받은이메일@도메인"]  # 여러 명의 수신자 이메일 주소들을 리스트로 저장
 
     for to_email in to_email_list:
         send_email(subject, summarized_body, [to_email], attachment_path)  # 수신자 이메일 주소를 리스트로 변환하여 함수 호출
